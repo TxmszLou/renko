@@ -30,10 +30,10 @@ int main () {
     p.damping = 1;
     std::cout << p << std::endl;
 
-    for (int t = 0; t < 10; t++) {
+    for (int t = 0; t < 50; t++) {
         std::cout << p << std::endl;
         std::cout << p.totalForce << std::endl;
-        p.integrate((real)1);
+        p.integrate((float)1);
     }
 
     return 0;

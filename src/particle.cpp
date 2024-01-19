@@ -1,4 +1,3 @@
-#include <renko/core.h>
 #include <renko/particle.h>
 
 using namespace renko;
