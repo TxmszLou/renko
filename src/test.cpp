@@ -13,7 +13,9 @@
 
 #include <renderer.h>
 #include "vertexBuffer.h"
+#include "vertexBufferLayout.h"
 #include "indexBuffer.h"
+#include "vertexArray.h"
 
 using namespace renko;
 
@@ -145,7 +147,8 @@ int main (int argc, char **argv) {
     // }
 
     GLFWwindow* window;
-    unsigned int vertex_buffer, vertex_array_object, index_buffer_object, vpos_location, vcol_location, fcol_location;
+    unsigned int vertex_buffer, vertex_array_object, index_buffer_object, fcol_location;
+    // , vpos_location, vcol_location, fcol_location;
 
     glfwSetErrorCallback(error_callback);
 
@@ -191,38 +194,25 @@ int main (int argc, char **argv) {
         2, 3, 0  // second one
     };
 
-    GLCall(glGenVertexArrays(1, &vertex_array_object));
-    GLCall(glBindVertexArray(vertex_array_object));
-
+    // Want to also abstract vertex array into something like
+    // to track the layout for buffer
+    VertexArray va;
     VertexBuffer vb(vertices, sizeof(vertices));
-    // GLCall(glGenBuffers(1, &vertex_buffer));
-    // GLCall(glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer)); // select the buffer, tells the GPU buffer is just an array
-    // GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW)); // copy data to vertex buffer
+    VertexBufferLayout layout;
+    layout.Push<float>(2);
+    va.AddBuffer(vb, layout);
 
     IndexBuffer ib(indices, 6);
-    // GLCall(glGenBuffers(1, &index_buffer_object));
-    // GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_object)); // select the buffer, tells the GPU buffer is just an array
-    // GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW)); // copy data to vertex buffer
 
     // read the shader!
     ShaderProgramSource source = ParseShader("../res/shaders/Basic.shader");
 
     unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
 
-    // GLCall(mvp_location = glGetUniformLocation(shader, "MVP"));
-    GLCall(vpos_location = glGetAttribLocation(shader, "vPos"));
-    // GLCall(vcol_location = glGetAttribLocation(shader, "vCol"));
+    // // GLCall(mvp_location = glGetUniformLocation(shader, "MVP"));
+    // GLCall(vpos_location = glGetAttribLocation(shader, "vPos"));
+    // // GLCall(vcol_location = glGetAttribLocation(shader, "vCol"));
     GLCall(fcol_location = glGetUniformLocation(shader, "u_Color"));
-
-    // enable vertex attribute
-    GLCall(glEnableVertexAttribArray(vpos_location));
-    // set vertex attribute
-    // this will bind the vertex array buffer to the currently bound vertex array object
-    GLCall(glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*) 0));
-
-    // GLCall(glEnableVertexAttribArray(vcol_location));
-    // GLCall(glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]), (void*) (sizeof(float) * 2)));
-
 
     // r value to change over time
     float r = 0.0f;
@@ -251,11 +241,10 @@ int main (int argc, char **argv) {
         // GLCall(glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) m));
         GLCall(glUniform4f(fcol_location, r, 0.3f, 0.8f, 1.0f));
 
-        GLCall(glBindVertexArray(vertex_array_object));
+        va.Bind();
         ib.Bind();
 
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
-        // glDrawArrays(GL_TRIANGLES, 0, 3);
 
         if (r > 1.0f)
             increment = -0.05f;
