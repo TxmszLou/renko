@@ -57,3 +57,8 @@ object containing both the vertex buffer and the layout so that we don't need to
 # Renderer (abstractions)
 
 Keep track each vertex buffer and index buffer as an object
+
+# Texture
+picture to draw
+
+png file -> cpu an array of pixels (rgba) -> texture in opengl, bind -> shader on gpu reads the data each time want to draw

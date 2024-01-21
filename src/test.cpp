@@ -17,6 +17,7 @@
 #include "indexBuffer.h"
 #include "vertexArray.h"
 #include "shader.h"
+#include "texture.h"
 
 using namespace renko;
 
@@ -97,13 +98,14 @@ int main (int argc, char **argv) {
     // three vertices of the triangle
     static const struct {
         float x, y;
+        float texCoord_x, texCoord_y;
         // float r, g, b;
     } vertices[4] =
     {
-        { -0.5f, -0.5f}, // , 1.f, 0.f, 0.f}, // 0
-        {  0.5f, -0.5f}, //, 0.f, 1.f, 0.f}, // 1
-        {  0.5f, 0.5f}, //, 0.f, 0.f, 1.f},  // 2
-        { -0.5f, 0.5f} //, 1.f, 1.f, 1.f}   // 3
+        { -0.5f, -0.5f, 0.f, 0.f}, // , 1.f, 0.f, 0.f}, // 0
+        {  0.5f, -0.5f, 1.f, 0.f}, //, 0.f, 1.f, 0.f}, // 1
+        {  0.5f, 0.5f,  1.f, 1.f}, //, 0.f, 0.f, 1.f},  // 2
+        { -0.5f, 0.5f,  0.f, 1.f} //, 1.f, 1.f, 1.f}   // 3
     };
 
     unsigned int indices[] = {
@@ -111,12 +113,18 @@ int main (int argc, char **argv) {
         2, 3, 0  // second one
     };
 
+
+    // enable alpha
+    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    GLCall(glEnable(GL_BLEND));
+
     // Want to also abstract vertex array into something like
     // to track the layout for buffer
     VertexArray va;
     VertexBuffer vb(vertices, sizeof(vertices));
     VertexBufferLayout layout;
-    layout.Push<float>(2);
+    layout.Push<float>(2); // vertex coord
+    layout.Push<float>(2); // tex coord
     va.AddBuffer(vb, layout);
 
     IndexBuffer ib(indices, 6);
@@ -124,6 +132,10 @@ int main (int argc, char **argv) {
     // read the shader!
     Shader shader("../res/shaders/Basic.shader");
     shader.Bind();
+
+    Texture texture("../res/textures/Logo.png");
+    texture.Bind();
+    shader.SetUniform1i("u_Texture", 0); // slot 0
 
     va.Unbind();
     shader.Unbind();
@@ -156,7 +168,7 @@ int main (int argc, char **argv) {
         // GLCall(glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) m));
 
         shader.Bind();
-        shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
+        // shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
 
         renderer.Draw(va, ib, shader);
 
