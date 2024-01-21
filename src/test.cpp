@@ -16,92 +16,10 @@
 #include "vertexBufferLayout.h"
 #include "indexBuffer.h"
 #include "vertexArray.h"
+#include "shader.h"
 
 using namespace renko;
 
-struct ShaderProgramSource
-{
-    std::string VertexSource;
-    std::string FragmentSource;
-};
-
-static ShaderProgramSource ParseShader(const std::string& filepath)
-{
-    std::ifstream stream(filepath);
-
-    enum class ShaderType
-    {
-        NONE = -1, VERTEX = 0, FRAGMENT = 1
-    };
-
-    std::string line;
-    // one for vertex shader, one for fragment shader
-    std::stringstream ss[2];
-    ShaderType type = ShaderType::NONE;
-
-    while (getline(stream, line))
-    {
-        if (line.find("#shader") != std::string::npos)
-        {
-            if (line.find("vertex") != std::string::npos)
-                type = ShaderType::VERTEX;
-            else if (line.find("fragment") != std::string::npos)
-                type = ShaderType::FRAGMENT;
-        }
-        else
-        {
-            ss[(int)type] << line << '\n';
-        }
-    }
-
-    return { ss[0].str(), ss[1].str() };
-}
-
-static unsigned int CompileShader(unsigned int type, const std::string& source)
-{
-    unsigned int id = glCreateShader(type);
-    const char* src = source.c_str(); // didn't copy the string, make sure source still exists
-    GLCall(glShaderSource(id, 1, &src, nullptr));
-    GLCall(glCompileShader(id));
-
-    // Error handling
-    int result;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-    if (result == GL_FALSE)
-    {
-        // get error message
-        int length;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-        char* message = (char*) alloca(length * sizeof(char));
-        glGetShaderInfoLog(id, length, &length, message);
-        std::cout << "Fail to compile " <<
-         (type == GL_VERTEX_SHADER ? "vertex shader" : "fragment shader") << std::endl;
-        std::cout << message << std::endl;
-        glDeleteShader(id);
-        return 0;
-    }
-
-    return id;
-}
-
-static unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
-{
-    unsigned int program = glCreateProgram();
-    unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-    // attach shaders
-    GLCall(glAttachShader(program, vs));
-    GLCall(glAttachShader(program, fs));
-    GLCall(glLinkProgram(program));
-    GLCall(glValidateProgram(program));
-
-    // delete intermediate complie files
-    GLCall(glDeleteShader(vs));
-    GLCall(glDeleteShader(fs));
-
-    return program;
-}
 
 static void error_callback(int error, const char* description)
 {
@@ -147,8 +65,7 @@ int main (int argc, char **argv) {
     // }
 
     GLFWwindow* window;
-    unsigned int vertex_buffer, vertex_array_object, index_buffer_object, fcol_location;
-    // , vpos_location, vcol_location, fcol_location;
+    unsigned int vertex_buffer, vertex_array_object, index_buffer_object;
 
     glfwSetErrorCallback(error_callback);
 
@@ -205,14 +122,14 @@ int main (int argc, char **argv) {
     IndexBuffer ib(indices, 6);
 
     // read the shader!
-    ShaderProgramSource source = ParseShader("../res/shaders/Basic.shader");
+    Shader shader("../res/shaders/Basic.shader");
+    shader.Bind();
 
-    unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
+    va.Unbind();
+    shader.Unbind();
+    vb.Unbind();
+    ib.Unbind();
 
-    // // GLCall(mvp_location = glGetUniformLocation(shader, "MVP"));
-    // GLCall(vpos_location = glGetAttribLocation(shader, "vPos"));
-    // // GLCall(vcol_location = glGetAttribLocation(shader, "vCol"));
-    GLCall(fcol_location = glGetUniformLocation(shader, "u_Color"));
 
     // r value to change over time
     float r = 0.0f;
@@ -232,15 +149,14 @@ int main (int argc, char **argv) {
         glClear(GL_COLOR_BUFFER_BIT);
         GLClearError();
 
-        GLCall(glUseProgram(shader));
-
         // mat4x4_identity(m);
         // mat4x4_rotate_Z(m, m, (float) 0);
         // mat4x4_mul(mvp, p, m);
 
         // GLCall(glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) m));
-        GLCall(glUniform4f(fcol_location, r, 0.3f, 0.8f, 1.0f));
 
+        shader.Bind();
+        shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
         va.Bind();
         ib.Bind();
 
@@ -261,7 +177,6 @@ int main (int argc, char **argv) {
         glfwPollEvents();
     }
 
-    glDeleteProgram(shader);
     glfwTerminate();
     return 0;
 }
