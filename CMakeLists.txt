@@ -15,8 +15,10 @@ file(GLOB_RECURSE MY_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 add_executable("RenkoTest" "${MY_SOURCES}")
 target_include_directories("RenkoTest" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
-add_subdirectory(glad/)
-target_link_libraries("RenkoTest" PRIVATE glfw OpenGL::GL glad)
+add_subdirectory(vendor/glad)
+add_subdirectory(vendor/stb_image)
+target_include_directories("RenkoTest" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/vendor")
+target_link_libraries("RenkoTest" PRIVATE glfw OpenGL::GL glad stb_image)
 
 # set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 # set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
