@@ -53,3 +53,7 @@ object containing both the vertex buffer and the layout so that we don't need to
 
 - For GLFW_OPENGL_CORE_PROFILE there is no default vertex array object, so we cannot set vertex attributes
 - Need to create vertex array objects
+
+# Renderer (abstractions)
+
+Keep track each vertex buffer and index buffer as an object

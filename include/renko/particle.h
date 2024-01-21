@@ -1,5 +1,4 @@
-#ifndef RENKO_PARTICLE_H
-#define RENKO_PARTICLE_H
+#pragma once
 
 #include <renko/core.h>
 #include <iostream>
@@ -59,5 +58,3 @@ namespace renko {
             real inverseMass;
     };
 }
-
-#endif // RENKO_PARTICLE_H

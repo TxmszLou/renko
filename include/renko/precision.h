@@ -1,5 +1,4 @@
-#ifndef RENKO_PRECISION_H
-#define RENKO_PRECISION_H
+#pragma once
 
 /* decide whether to use single or double precision for this physics engine */
 #include <math.h>
@@ -11,5 +10,3 @@
 namespace renko {
     typedef float real;
 }
-
-#endif // RENKO_PRECISION_H

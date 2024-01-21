@@ -1,5 +1,4 @@
-#ifndef RENKO_CORE_H
-#define RENKO_CORE_H
+#pragma once
 
 #include <renko/precision.h>
 #include <iostream>
@@ -138,5 +137,3 @@ namespace renko {
             }
     };
 }
-
-#endif // RENKO_CORE_H

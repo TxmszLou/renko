@@ -7,34 +7,15 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <signal.h>
 
 #include <renko/core.h>
 #include <renko/particle.h>
 
+#include <renderer.h>
+#include "vertexBuffer.h"
+#include "indexBuffer.h"
+
 using namespace renko;
-
-#define ASSERT(x) if (!(x)) raise(SIGTRAP);
-#define GLCall(x) GLClearError();\
-    x;\
-    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
-
-static void GLClearError()
-{
-    while (glGetError() != GL_NO_ERROR);
-}
-
-static bool GLLogCall(const char* function, const char* file, int line)
-{
-    while (GLenum error = glGetError())
-    {
-        std::cout << "[OpenGL Error] (" << error << "):" << function <<
-            " " << file << ":" << line << std::endl;
-        return false;
-    }
-
-    return true;
-}
 
 struct ShaderProgramSource
 {
@@ -213,13 +194,15 @@ int main (int argc, char **argv) {
     GLCall(glGenVertexArrays(1, &vertex_array_object));
     GLCall(glBindVertexArray(vertex_array_object));
 
-    GLCall(glGenBuffers(1, &vertex_buffer));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer)); // select the buffer, tells the GPU buffer is just an array
-    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW)); // copy data to vertex buffer
+    VertexBuffer vb(vertices, sizeof(vertices));
+    // GLCall(glGenBuffers(1, &vertex_buffer));
+    // GLCall(glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer)); // select the buffer, tells the GPU buffer is just an array
+    // GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW)); // copy data to vertex buffer
 
-    GLCall(glGenBuffers(1, &index_buffer_object));
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_object)); // select the buffer, tells the GPU buffer is just an array
-    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW)); // copy data to vertex buffer
+    IndexBuffer ib(indices, 6);
+    // GLCall(glGenBuffers(1, &index_buffer_object));
+    // GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_object)); // select the buffer, tells the GPU buffer is just an array
+    // GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW)); // copy data to vertex buffer
 
     // read the shader!
     ShaderProgramSource source = ParseShader("../res/shaders/Basic.shader");
@@ -240,7 +223,6 @@ int main (int argc, char **argv) {
     // GLCall(glEnableVertexAttribArray(vcol_location));
     // GLCall(glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]), (void*) (sizeof(float) * 2)));
 
-    GLCall(glUseProgram(shader));
 
     // r value to change over time
     float r = 0.0f;
@@ -260,12 +242,18 @@ int main (int argc, char **argv) {
         glClear(GL_COLOR_BUFFER_BIT);
         GLClearError();
 
+        GLCall(glUseProgram(shader));
+
         // mat4x4_identity(m);
         // mat4x4_rotate_Z(m, m, (float) 0);
         // mat4x4_mul(mvp, p, m);
 
         // GLCall(glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) m));
         GLCall(glUniform4f(fcol_location, r, 0.3f, 0.8f, 1.0f));
+
+        GLCall(glBindVertexArray(vertex_array_object));
+        ib.Bind();
+
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
         // glDrawArrays(GL_TRIANGLES, 0, 3);
 
