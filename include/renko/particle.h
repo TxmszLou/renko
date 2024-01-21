@@ -23,8 +23,13 @@ namespace renko {
             /* the acceleration vector of this particle */
             Vector3 acceleration;
 
-            /* to simulate frictions experiences by the particle */
-            // from 0 (most damped) to 1 (no damping)
+            // design decision: could use a 'drag force' to simulate drag
+            // however this could cause the object to experience drag
+            // that is due to numerical inaccuracy
+            // If we want to need complicated drag, such as aerodynamic drag
+            // we can create a special 'drag force'.
+            /* to simulate frictions experiences by the particle
+               from 0 (most damped) to 1 (no damping). We assume the damping is linear. */
             real damping;
 
             /* total force exerted on the particle */
