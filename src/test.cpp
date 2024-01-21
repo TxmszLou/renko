@@ -130,6 +130,7 @@ int main (int argc, char **argv) {
     vb.Unbind();
     ib.Unbind();
 
+    Renderer renderer;
 
     // r value to change over time
     float r = 0.0f;
@@ -145,8 +146,7 @@ int main (int argc, char **argv) {
         // ratio = width / (float) height;
 
         /* Render here */
-        // glViewport(0, 0, width, height); 
-        glClear(GL_COLOR_BUFFER_BIT);
+        renderer.Clear();
         GLClearError();
 
         // mat4x4_identity(m);
@@ -157,10 +157,8 @@ int main (int argc, char **argv) {
 
         shader.Bind();
         shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
-        va.Bind();
-        ib.Bind();
 
-        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+        renderer.Draw(va, ib, shader);
 
         if (r > 1.0f)
             increment = -0.05f;
