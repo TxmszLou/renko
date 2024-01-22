@@ -24,6 +24,8 @@
 #include "shader.h"
 #include "texture.h"
 
+#include "tests/TestClearColor.h"
+
 using namespace renko;
 
 
@@ -100,57 +102,9 @@ int main (int argc, char **argv) {
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
-    // three vertices of the triangle
-    static const struct {
-        float x, y;
-        float texCoord_x, texCoord_y;
-        // float r, g, b;
-    } vertices[4] =
-    {
-        { -50.f,-50.f, 0.f, 0.f}, // , 1.f, 0.f, 0.f}, // 0
-        { 50.f, -50.f, 1.f, 0.f}, //, 0.f, 1.f, 0.f}, // 1
-        { 50.f, 50.f,  1.f, 1.f}, //, 0.f, 0.f, 1.f},  // 2
-        { -50.f,  50.f,  0.f, 1.f} //, 1.f, 1.f, 1.f}   // 3
-    };
-
-    unsigned int indices[] = {
-        0, 1, 2, // first triangle
-        2, 3, 0  // second one
-    };
-
-
     // enable alpha
     GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     GLCall(glEnable(GL_BLEND));
-
-    // Want to also abstract vertex array into something like
-    // to track the layout for buffer
-    VertexArray va;
-    VertexBuffer vb(vertices, sizeof(vertices));
-    VertexBufferLayout layout;
-    layout.Push<float>(2); // vertex coord
-    layout.Push<float>(2); // tex coord
-    va.AddBuffer(vb, layout);
-
-    IndexBuffer ib(indices, 6);
-
-    // make projection matrix
-    // left, right, bottom, top, near, far
-    glm::mat4 proj = glm::ortho(0.f, 540.f, 0.f, 960.f, -1.f, 1.f);
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-
-    // read the shader!
-    Shader shader("../res/shaders/Basic.shader");
-    shader.Bind();
-
-    Texture texture("../res/textures/Logo.png");
-    texture.Bind();
-    shader.SetUniform1i("u_Texture", 0); // slot 0
-
-    va.Unbind();
-    shader.Unbind();
-    vb.Unbind();
-    ib.Unbind();
 
     Renderer renderer;
 
@@ -165,69 +119,22 @@ int main (int argc, char **argv) {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     ImGui::StyleColorsDark();
 
-    bool show_demo_window = true;
-    bool show_another_window = false;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-    // translation matrix
-    glm::vec3 translationA(200, 200, 0);
-    glm::vec3 translationB(400, 200, 0);
+    test::TestClearColor test;
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-        // float ratio;
-        // int width, height;
-        // mat4x4 m;
-
-        // glfwGetFramebufferSize(window, &width, &height);
-        // ratio = width / (float) height;
-
-        /* Render here */
         renderer.Clear();
 
-        // Start the ImGUI frame
+        test.OnUpdate(0.0f);
+        test.OnRender();
+
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        {
-            // draw the first square
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
-            glm::mat4 mvp = proj * view * model;
-
-            shader.Bind();
-            shader.SetUniformMat4f("u_MVP", mvp);
-            renderer.Draw(va, ib, shader);
-        }
-
-        {
-            // draw the second square
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
-            glm::mat4 mvp = proj * view * model;
-
-            shader.Bind();
-            shader.SetUniformMat4f("u_MVP", mvp);
-            renderer.Draw(va, ib, shader);
-        }
-
-        // ImGui window
-        {
-            ImGui::Begin("Hello, world!");
-            ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 540.0f);
-            ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 540.0f);
-            // ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-            // if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-            //     counter++;
-            // ImGui::SameLine();
-            // ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-            ImGui::End();
-        }
-
         // ImGUI render
+        test.OnImGuiRender();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
