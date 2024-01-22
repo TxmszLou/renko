@@ -62,3 +62,22 @@ Keep track each vertex buffer and index buffer as an object
 picture to draw
 
 png file -> cpu an array of pixels (rgba) -> texture in opengl, bind -> shader on gpu reads the data each time want to draw
+
+# Blending
+
+Determines how to combine the output color with what is already in our target buffer.
+- output (source): the color we output from fragment shader
+- target buffer (destination): the buffer our fragment shader is drawing to
+
+glEnalbe(GL_BLEND)
+glBlendFunc(src, dest)
+- how the src RGBA factor is computed 
+- how the dest RGBA factor is computed
+glBlendEquation(mode)
+- how we combine the src and dest colors
+
+example:
+src = GL_SRC_ALPHA -> f_src = alpha comp of src
+dst = GL_ONE_MINUS_SRC_ALPHA -> f_dest = 1 - alpha comp of dest
+
+result = src * f_src + dest * f_dest
