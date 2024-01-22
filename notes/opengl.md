@@ -81,3 +81,17 @@ src = GL_SRC_ALPHA -> f_src = alpha comp of src
 dst = GL_ONE_MINUS_SRC_ALPHA -> f_dest = 1 - alpha comp of dest
 
 result = src * f_src + dest * f_dest
+
+# Projection
+A matrix to project the vertices in 3D to the window.
+2D: orthographic projection (usually)
+3D: perspective projection (usually)
+
+Map onto the standard view [-1,1] x [-1,1] x [-1,1]
+
+# MVP (model view projection)
+each is a 4x4 matrix -> opengl: projection * view * model
+(due to column major matrix)
+
+view matrix (imatrix): view of the camera, position + orientation
+model matrix: transformation of the model
