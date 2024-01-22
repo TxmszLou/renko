@@ -95,3 +95,15 @@ each is a 4x4 matrix -> opengl: projection * view * model
 
 view matrix (imatrix): view of the camera, position + orientation
 model matrix: transformation of the model
+
+# Batch Rendering
+Goal: render a lot of things at once.
+batching all the geometry into a single vertex buffer
+position of each quad also in vertex buffer
+vertex buffer needs to be dynamic so we can stream data into it
+
+allocate memeory on GPU and dynamically change it
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertex) * num_of_vertices, nullptr, GL_DYNAMIC_DRAW);
+
+glBindBuffer(GL_ARRAY_BUFFER, vb)
+glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
