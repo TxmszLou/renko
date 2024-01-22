@@ -24,7 +24,8 @@
 #include "shader.h"
 #include "texture.h"
 
-#include "tests/TestClearColor.h"
+#include "tests/testClearColor.h"
+#include "tests/testQuadSolid.h"
 
 using namespace renko;
 
@@ -119,30 +120,57 @@ int main (int argc, char **argv) {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     ImGui::StyleColorsDark();
 
-    test::TestClearColor test;
-
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
     {
-        renderer.Clear();
+        // make a scope for the tests
+        // the tests should get deleted out of this scope by the destructors
+        test::Test* currentTest = nullptr;
+        test::TestMenu* testMenu = new test::TestMenu(currentTest);
+        currentTest = testMenu;
 
-        test.OnUpdate(0.0f);
-        test.OnRender();
+        testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+        testMenu->RegisterTest<test::TestQuadSolid>("Solid Quad");
 
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        while (!glfwWindowShouldClose(window))
+        {
+            // clear the background to black
+            GLCall(glClearColor(0.0, 0.0, 0.0, 1.0));
+            renderer.Clear();
 
-        // ImGUI render
-        test.OnImGuiRender();
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+            if (currentTest)
+            {
+                currentTest->OnUpdate(0.0f);
+                currentTest->OnRender();
+                ImGui::Begin("Test");
 
-        /* Poll for and process events */
-        glfwPollEvents();
+                if (currentTest != testMenu && ImGui::Button("<-"))
+                {
+                    // free the current test when "back"
+                    delete currentTest;
+                    currentTest = testMenu;
+                }
+
+                currentTest->OnImGuiRender();
+
+                ImGui::End();
+            }
+
+            // ImGUI render
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+            /* Swap front and back buffers */
+            glfwSwapBuffers(window);
+
+            /* Poll for and process events */
+            glfwPollEvents();
+        }
+        delete currentTest;
+        if (currentTest != testMenu)
+            delete testMenu;
     }
 
     ImGui_ImplOpenGL3_Shutdown();
