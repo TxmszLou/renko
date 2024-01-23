@@ -27,6 +27,7 @@
 #include "tests/testClearColor.h"
 #include "tests/testQuadSolid.h"
 #include "tests/testTexQuad.h"
+#include "tests/testBatch.h"
 
 using namespace renko;
 
@@ -100,6 +101,7 @@ int main (int argc, char **argv) {
         testMenu->RegisterTest<test::TestClearColor>("Clear Color");
         testMenu->RegisterTest<test::TestQuadSolid>("Solid Quad");
         testMenu->RegisterTest<test::TestTexQuad>("Texture Quad");
+        testMenu->RegisterTest<test::TestBatch>("Batch Quad");
 
         while (!glfwWindowShouldClose(window))
         {

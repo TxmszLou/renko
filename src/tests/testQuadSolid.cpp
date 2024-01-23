@@ -45,7 +45,7 @@ namespace test
         m_VAO = std::make_unique<VertexArray>();
         m_IBO = std::make_unique<IndexBuffer>(indices, 6);
         m_VB  = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
-        m_Shader = std::make_unique<Shader>("../res/shaders/Basic.shader");
+        m_Shader = std::make_unique<Shader>("../res/shaders/TestQuadSolid.shader");
 
         VertexBufferLayout layout;
         layout.Push<float>(2); // vertex coord

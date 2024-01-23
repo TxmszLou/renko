@@ -20,7 +20,7 @@ namespace test
           m_Translation(200, 200, 0)
     {
         // three vertices of the triangle
-        const struct
+        struct
         {
             float x, y;
             float texCoord_x, texCoord_y;

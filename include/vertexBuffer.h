@@ -7,7 +7,10 @@ class VertexBuffer
         // my buffer id
         unsigned int m_RendererID;
     public:
+        // static buffer
         VertexBuffer(const void* data, unsigned int size);
+        // dynamic buffer
+        VertexBuffer(unsigned int size);
         ~VertexBuffer();
 
         void Bind() const;

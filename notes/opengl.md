@@ -107,3 +107,4 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(vertex) * num_of_vertices, nullptr, GL_DYNA
 
 glBindBuffer(GL_ARRAY_BUFFER, vb)
 glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
+memcpy(vertices, data, size)
