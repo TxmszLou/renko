@@ -62,16 +62,21 @@ namespace test
         unsigned int indices[] = {
             0, 1, 2, // first triangle
             2, 3, 0,  // second one
+            4, 5, 6,
+            6, 7, 4
         };
 
         m_VAO = std::make_unique<VertexArray>();
-        m_IBO = std::make_unique<IndexBuffer>(indices, 6);
+        m_VAO->Init();
+        m_IBO = std::make_unique<IndexBuffer>();
+        m_IBO->Init(indices, 12);
         m_Shader = std::make_unique<Shader>("../res/shaders/TestBatch.shader");
 
         m_Textures.push_back(std::make_unique<Texture>("../res/textures/vsc-logo.png"));
 
         // make a dynamic vertex buffer by not passing the data
-        m_VB  = std::make_unique<VertexBuffer>(sizeof(Vertex) * 1000);
+        m_VB  = std::make_unique<VertexBuffer>();
+        m_VB->Init(sizeof(Vertex) * 1000);
 
         VertexBufferLayout layout;
         layout.Push<glm::vec2>(1); // vertex coord
@@ -107,19 +112,18 @@ namespace test
         memcpy(vertices, q0.data(), q0.size() * sizeof(Vertex));
         memcpy(vertices + q0.size(), q1.data(), q1.size() * sizeof(Vertex));
 
-        unsigned int indices[] = {
-            0, 1, 2, // first triangle
-            2, 3, 0,  // second one
+        // unsigned int indices[] = {
+        //     0, 1, 2, // first triangle
+        //     2, 3, 0,  // second one
             
-            4, 5, 6,
-            6, 7, 4
-        };
+        // };
 
-        m_IBO = std::make_unique<IndexBuffer>(indices, 6);
+        // m_IBO = std::make_unique<IndexBuffer>(indices, 6);
 
 
-        // make a dynamic vertex buffer by not passing the data
-        m_VB  = std::make_unique<VertexBuffer>(sizeof(Vertex) * 1000);
+        // // make a dynamic vertex buffer by not passing the data
+        // m_VB  = std::make_unique<VertexBuffer>();
+        // m_VB->Init(sizeof(Vertex) * 1000);
 
         VertexBufferLayout layout;
         layout.Push<float>(2); // vertex coord

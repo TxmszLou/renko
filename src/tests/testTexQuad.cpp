@@ -51,8 +51,11 @@ namespace test
         GLCall(glEnable(GL_BLEND));
 
         m_VAO = std::make_unique<VertexArray>();
-        m_IBO = std::make_unique<IndexBuffer>(indices, 12);
-        m_VB  = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
+        m_VAO->Init();
+        m_IBO = std::make_unique<IndexBuffer>();
+        m_IBO->Init(indices, 12);
+        m_VB  = std::make_unique<VertexBuffer>();
+        m_VB->Init(vertices, sizeof(vertices));
         m_Shader = std::make_unique<Shader>("../res/shaders/TestTexQuad.shader");
 
         m_Textures.push_back(std::make_unique<Texture>("../res/textures/google-logo.png"));

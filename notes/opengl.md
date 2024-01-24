@@ -108,3 +108,48 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(vertex) * num_of_vertices, nullptr, GL_DYNA
 glBindBuffer(GL_ARRAY_BUFFER, vb)
 glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
 memcpy(vertices, data, size)
+
+## Batch renderer
+
+struct Vertex
+    - Position
+    - Color
+    - TextCoords
+    - TexIndex
+
+Data to track in Renderer
+    - VA
+        vertex array we maintain after Init() before Shutdown()
+    - VB
+        dynamic vertex buffer we maintain and flush data to
+    - IB
+        index buffer we maintain
+    - Quad Buffer
+        a pointer to the data, continuous blocks of vertices (on CPU)
+        this is initialized every update
+        we construct data of the vertices to draw here
+        then flush to the GPU
+        then do a draw call on GPU
+    - Quad Buffer Ptr
+        pointer to the next opening of the buffer
+    - array TextureSlots
+        array index to which textslot to use
+    - TextureSlotIndex
+
+class Renderer
+    - Renderer()
+        setup VA, VB, IB, allocate memory for QuadBuffer
+    - ~Renderer()
+        clear memory
+        unbind VA, VB, IB
+
+    - BeginBatch()
+        reset Quad buffer ptr to the beginning
+    - EndBatch()
+        send data to GPU
+    - Flush()
+    - DrawQuad
+
+    - GetStats
+    - ResetStats
+

@@ -9,8 +9,10 @@ class IndexBuffer
         // how many indices are there
         unsigned int m_Count;
     public:
-        IndexBuffer(const unsigned int* data, unsigned int size);
+        IndexBuffer();
         ~IndexBuffer();
+
+        void Init(const unsigned int* data, unsigned int count);
 
         void Bind() const;
         void Unbind() const;

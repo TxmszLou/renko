@@ -28,6 +28,7 @@
 #include "tests/testQuadSolid.h"
 #include "tests/testTexQuad.h"
 #include "tests/testBatch.h"
+#include "tests/testBatchRenderer.h"
 
 using namespace renko;
 
@@ -78,8 +79,6 @@ int main (int argc, char **argv) {
     GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     GLCall(glEnable(GL_BLEND));
 
-    Renderer renderer;
-
     // Init ImGUI
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -102,12 +101,12 @@ int main (int argc, char **argv) {
         testMenu->RegisterTest<test::TestQuadSolid>("Solid Quad");
         testMenu->RegisterTest<test::TestTexQuad>("Texture Quad");
         testMenu->RegisterTest<test::TestBatch>("Batch Quad");
+        testMenu->RegisterTest<test::TestBatchRenderer>("Batch Renderer Quad");
 
         while (!glfwWindowShouldClose(window))
         {
             // clear the background to black
             GLCall(glClearColor(0.0, 0.0, 0.0, 1.0));
-            renderer.Clear();
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();

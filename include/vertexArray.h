@@ -10,6 +10,8 @@ public:
     VertexArray();
     ~VertexArray();
 
+    void Init();
+
     void AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout);
 
     void Bind() const;

@@ -43,8 +43,11 @@ namespace test
         GLCall(glEnable(GL_BLEND));
 
         m_VAO = std::make_unique<VertexArray>();
-        m_IBO = std::make_unique<IndexBuffer>(indices, 6);
-        m_VB  = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
+        m_VAO->Init();
+        m_IBO = std::make_unique<IndexBuffer>();
+        m_IBO->Init(indices, 6);
+        m_VB  = std::make_unique<VertexBuffer>();
+        m_VB->Init(vertices, sizeof(vertices));
         m_Shader = std::make_unique<Shader>("../res/shaders/TestQuadSolid.shader");
 
         VertexBufferLayout layout;
