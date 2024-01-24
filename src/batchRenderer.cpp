@@ -9,6 +9,9 @@
 #include <iostream>
 
 
+#include "glm/gtx/string_cast.hpp"
+
+#define GLM_ENABLE_EXPERIMENTAL
 
 
 
@@ -47,20 +50,6 @@ struct RendererData
 };
 
 static RendererData s_Data;
-// {
-//     VertexArray(),
-//     VertexBuffer(),
-//     VertexBufferLayout(),
-//     IndexBuffer(),
-//     nullptr,
-//     nullptr,
-//     0
-// };
-
-
-// static VertexArray s_vao;
-// static VertexBuffer s_vb;
-// static IndexBuffer s_ibo;
 
 void BatchRenderer::Init()
 {
@@ -75,6 +64,7 @@ void BatchRenderer::Init()
     s_Data.vao.Init();
     s_Data.vb.Init(MaxVertices * sizeof(Vertex));
     s_Data.layout.Push<glm::vec2>(1); // vertex coord
+    s_Data.layout.Push<glm::vec4>(1); // color
     s_Data.layout.Push<glm::vec2>(1); // tex coord
     s_Data.layout.Push<float>(1); // tex slot
     s_Data.vao.AddBuffer(s_Data.vb, s_Data.layout);
@@ -88,6 +78,7 @@ void BatchRenderer::Shutdown()
     s_Data.vao.Unbind();
     s_Data.ibo.Unbind();
     s_Data.vb.Unbind();
+    s_Data.layout.Reset();
 
     // free memory
     delete[] s_Data.quadBuffer;
@@ -102,9 +93,11 @@ void BatchRenderer::BeginBatch()
 void BatchRenderer::EndBatch()
 {
     // calculate size of quad buffer and send data
-    GLsizeiptr size = (uint8_t*)s_Data.quadBufferNext - (uint8_t*)s_Data.quadBuffer;
-    s_Data.vb.Bind();
-    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, size, s_Data.quadBuffer));
+    GLsizeiptr size = (char*)s_Data.quadBufferNext - (char*)s_Data.quadBuffer;
+    std::cout << "size: " << size << std::endl;
+    // s_Data.vb.Bind();
+    std::cout << "layout m_Stride: " << s_Data.layout.GetStride() << std::endl;
+    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, s_Data.vertexCount * sizeof(Vertex), s_Data.quadBuffer));
 }
 
 void BatchRenderer::Flush()
@@ -113,6 +106,15 @@ void BatchRenderer::Flush()
     // s_Data.vao.Unbind();
     s_Data.vao.Bind();
     s_Data.ibo.Bind();
+    std::cout << "index count: " << s_Data.indexCount << std::endl;
+    std::cout << "buffer: " << std::endl;
+
+    Vertex* temp = s_Data.quadBuffer;
+    for (int i = 0; i < 6; i++)
+    {
+        std::cout << glm::to_string(temp->position) << std::endl;
+        temp++;
+    }
     GLCall(glDrawElements(GL_TRIANGLES, s_Data.indexCount, GL_UNSIGNED_INT, nullptr));
     // s_Data.vao.Unbind();
 
@@ -135,21 +137,25 @@ void BatchRenderer::MakeQuad(float px, float py, float dx, float dy, glm::vec4 c
     // start creating quad vertices
     // s_Data.quadBufferNext->position = glm::vec2(px, py);
     s_Data.quadBufferNext->position = { px, py };
+    s_Data.quadBufferNext->color = color;
     s_Data.quadBufferNext->texCoord = glm::vec2(0.f, 0.f);
     s_Data.quadBufferNext->texSlot = 0.f;
     s_Data.quadBufferNext++;
 
     s_Data.quadBufferNext->position = { px + dx, py };
+    s_Data.quadBufferNext->color = color;
     s_Data.quadBufferNext->texCoord = glm::vec2(1.f, 0.f);
     s_Data.quadBufferNext->texSlot = 0.f;
     s_Data.quadBufferNext++;
 
     s_Data.quadBufferNext->position = { px + dx, py + dy };
+    s_Data.quadBufferNext->color = color;
     s_Data.quadBufferNext->texCoord = glm::vec2(1.f, 1.f);
     s_Data.quadBufferNext->texSlot = 0.f;
     s_Data.quadBufferNext++;
 
     s_Data.quadBufferNext->position = { px, py + dy };
+    s_Data.quadBufferNext->color = color;
     s_Data.quadBufferNext->texCoord = glm::vec2(0.f, 1.f);
     s_Data.quadBufferNext->texSlot = 0.f;
     s_Data.quadBufferNext++;

@@ -39,6 +39,7 @@ public:
 
     inline const std::vector<VertexBufferElement>& GetElements() const { return m_Elements; }
     inline unsigned int GetStride() const { return m_Stride; }
+    inline void Reset() { m_Elements.clear(); m_Stride = 0; }
 
 private:
     std::vector<VertexBufferElement> m_Elements;

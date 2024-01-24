@@ -107,6 +107,7 @@ int main (int argc, char **argv) {
         {
             // clear the background to black
             GLCall(glClearColor(0.0, 0.0, 0.0, 1.0));
+            GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();

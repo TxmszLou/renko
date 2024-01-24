@@ -83,8 +83,8 @@ namespace test
         layout.Push<glm::vec2>(1); // tex coord
         m_VAO->AddBuffer(*m_VB, layout);
 
-        // pushdata
-        GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices));
+        // // pushdata
+        // GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices));
 
         m_Textures[0]->Bind(0);
 

@@ -18,6 +18,7 @@ static const unsigned int MaxIndices = MaxQuads * 6;
 struct Vertex
 {
     glm::vec2 position;
+    glm::vec4 color;
     glm::vec2 texCoord;
     float texSlot;
 };

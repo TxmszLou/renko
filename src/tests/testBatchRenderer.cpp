@@ -54,7 +54,6 @@ namespace test
 
         // flush data and draw
         m_Shader->SetUniformMat4f("u_MVP", mvp);
-        m_Shader->SetUniform4f("u_Color", 0.2f, 0.4f, 0.6f, 1.f);
         BatchRenderer::Flush();
     }
     
