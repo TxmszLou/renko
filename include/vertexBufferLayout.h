@@ -7,11 +7,11 @@
 
 struct VertexBufferElement
 {
-    unsigned int type;
-    unsigned int count;
+    uint32_t type;
+    uint32_t count;
     unsigned char normalized;
 
-    static unsigned int GetSizeOfType(unsigned int type)
+    static uint32_t GetSizeOfType(uint32_t type)
     {
         switch(type)
         {
@@ -30,7 +30,7 @@ public:
     VertexBufferLayout()
         : m_Stride(0) {}
     template<typename T>
-    void Push(unsigned int count)
+    void Push(uint32_t count)
     {
         // should not be called
         // static_assert(false);
@@ -38,10 +38,10 @@ public:
 
 
     inline const std::vector<VertexBufferElement>& GetElements() const { return m_Elements; }
-    inline unsigned int GetStride() const { return m_Stride; }
+    inline uint32_t GetStride() const { return m_Stride; }
     inline void Reset() { m_Elements.clear(); m_Stride = 0; }
 
 private:
     std::vector<VertexBufferElement> m_Elements;
-    unsigned int m_Stride;
+    uint32_t m_Stride;
 };

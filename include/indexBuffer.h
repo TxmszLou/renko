@@ -5,17 +5,17 @@ class IndexBuffer
 {
     private:
         // my buffer id
-        unsigned int m_RendererID;
+        uint32_t m_RendererID;
         // how many indices are there
-        unsigned int m_Count;
+        uint32_t m_Count;
     public:
         IndexBuffer();
         ~IndexBuffer();
 
-        void Init(const unsigned int* data, unsigned int count);
+        void Init(const uint32_t* data, uint32_t count);
 
         void Bind() const;
         void Unbind() const;
 
-        inline unsigned int GetCount() const { return m_Count; }
+        inline uint32_t GetCount() const { return m_Count; }
 };

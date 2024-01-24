@@ -11,9 +11,10 @@
 #include <memory>
 
 // max number of quads to render at a time
-static const unsigned int MaxQuads = 1000;
-static const unsigned int MaxVertices = MaxQuads * 4;
-static const unsigned int MaxIndices = MaxQuads * 6;
+static const uint32_t MaxQuads = 1000;
+static const uint32_t MaxVertices = MaxQuads * 4;
+static const uint32_t MaxIndices = MaxQuads * 6;
+static const uint32_t MaxTextures = 32;
 
 struct Vertex
 {

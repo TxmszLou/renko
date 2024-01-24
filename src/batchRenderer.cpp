@@ -15,9 +15,9 @@
 
 
 
-static unsigned int* populateIndices()
+static uint32_t* populateIndices()
 {
-    unsigned int *p = new unsigned int[MaxIndices];
+    uint32_t *p = new uint32_t[MaxIndices];
     for (int i = 0; i < MaxQuads; i++)
     {
         // each quad has indices
@@ -33,7 +33,7 @@ static unsigned int* populateIndices()
     return p;
 }
 
-static unsigned int *indices = populateIndices();
+static uint32_t *indices = populateIndices();
 
 struct RendererData
 {
@@ -44,9 +44,9 @@ struct RendererData
     Vertex* quadBuffer = nullptr;
     Vertex* quadBufferNext = nullptr;
     // how many indices to draw
-    unsigned int indexCount = 0;
-    unsigned int quadCount = 0;
-    unsigned int vertexCount = 0;
+    uint32_t indexCount = 0;
+    uint32_t quadCount = 0;
+    uint32_t vertexCount = 0;
 };
 
 static RendererData s_Data;

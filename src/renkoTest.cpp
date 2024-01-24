@@ -46,7 +46,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 int main (int argc, char **argv) {
     GLFWwindow* window;
-    unsigned int vertex_buffer, vertex_array_object, index_buffer_object;
 
     glfwSetErrorCallback(error_callback);
 

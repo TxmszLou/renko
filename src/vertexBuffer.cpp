@@ -10,14 +10,14 @@ VertexBuffer::~VertexBuffer()
     GLCall(glDeleteBuffers(1, &m_RendererID));
 }
 
-void VertexBuffer::Init(const void* data, unsigned int size)
+void VertexBuffer::Init(const void* data, uint32_t size)
 {
     GLCall(glGenBuffers(1, &m_RendererID));
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID)); // select the buffer, tells the GPU buffer is just an array
     GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW)); // copy data to vertex buffer
 }
 
-void VertexBuffer::Init(unsigned int size)
+void VertexBuffer::Init(uint32_t size)
 {
     GLCall(glGenBuffers(1, &m_RendererID));
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));

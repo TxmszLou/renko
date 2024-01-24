@@ -59,7 +59,7 @@ namespace test
         Vertex vertices[4];
         memcpy(vertices, q0.data(), q0.size() * sizeof(Vertex));
 
-        unsigned int indices[] = {
+        uint32_t indices[] = {
             0, 1, 2, // first triangle
             2, 3, 0,  // second one
             4, 5, 6,
@@ -112,7 +112,7 @@ namespace test
         memcpy(vertices, q0.data(), q0.size() * sizeof(Vertex));
         memcpy(vertices + q0.size(), q1.data(), q1.size() * sizeof(Vertex));
 
-        // unsigned int indices[] = {
+        // uint32_t indices[] = {
         //     0, 1, 2, // first triangle
         //     2, 3, 0,  // second one
             

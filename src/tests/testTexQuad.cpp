@@ -39,7 +39,7 @@ namespace test
                 { 50.f,  50.f, 0.f, 1.f, 1.f}   //, 1.f, 1.f, 1.f}   // 3
             };
 
-        unsigned int indices[] = {
+        uint32_t indices[] = {
             0, 1, 2, // first triangle
             2, 3, 0,  // second one
             4, 5, 6, // first triangle

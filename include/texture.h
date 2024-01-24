@@ -5,7 +5,7 @@
 class Texture
 {
 private:
-    unsigned int m_RendererID;
+    uint32_t m_RendererID;
     std::string m_FilePath;
     unsigned char* m_LocalBuffer; // store the texture
     int m_Width, m_Height, m_BPP; // bits per pixel
@@ -14,7 +14,7 @@ public:
     Texture(const std::string& path);
     ~Texture();
 
-    void Bind(unsigned int slot = 0) const;
+    void Bind(uint32_t slot = 0) const;
     void Unbind() const;
 
     inline int GetWidth() const { return m_Width; }

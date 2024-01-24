@@ -49,9 +49,9 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
     return { ss[0].str(), ss[1].str() };
 }
 
-unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
+uint32_t Shader::CompileShader(uint32_t type, const std::string& source)
 {
-    unsigned int id = glCreateShader(type);
+    uint32_t id = glCreateShader(type);
     const char* src = source.c_str(); // didn't copy the string, make sure source still exists
     GLCall(glShaderSource(id, 1, &src, nullptr));
     GLCall(glCompileShader(id));
@@ -111,7 +111,7 @@ void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix)
     GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
 }
 
-unsigned int Shader::GetUniformLocation(const std::string &name)
+uint32_t Shader::GetUniformLocation(const std::string &name)
 {
     if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
         return m_UniformLocationCache[name];
@@ -124,11 +124,11 @@ unsigned int Shader::GetUniformLocation(const std::string &name)
     return location;
 }
 
-unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
+uint32_t Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
 {
-    unsigned int program = glCreateProgram();
-    unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+    uint32_t program = glCreateProgram();
+    uint32_t vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
+    uint32_t fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
     // attach shaders
     GLCall(glAttachShader(program, vs));
