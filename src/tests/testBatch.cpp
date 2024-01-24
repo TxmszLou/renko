@@ -15,19 +15,32 @@ namespace test
 {
     struct Vertex
     {
-        float x, y;
-        float texCoord_x, texCoord_y;
+        // float x, y;
+        // float texCoord_x, texCoord_y;
+        glm::vec2 position;
+        glm::vec2 texCoord;
         // float texSlot;
         // float r, g, b;
     };
 
     // lower left corner at (px, py), width = size
-    static::std::array<Vertex, 4> MakeQuad(float px, float py) {
+    static std::array<Vertex, 4> MakeQuad(float px, float py) {
         float size = 100.f;
-        Vertex v0 { px       , py + 0.f , 0.f, 0.f};
-        Vertex v1 { px + size, py + 0.f , 1.f, 0.f};
-        Vertex v2 { px + size, py + size, 1.f, 1.f};
-        Vertex v3 { px + 0.f , py + size, 0.f, 1.f};
+        Vertex v0;
+        v0.position = glm::vec2(px, py);
+        v0.texCoord = glm::vec2(0.f, 0.f);
+
+        Vertex v1;
+        v1.position = glm::vec2(px + size, py);
+        v1.texCoord = glm::vec2(1.f, 0.f);
+
+        Vertex v2;
+        v2.position = glm::vec2(px + size, py + size);
+        v2.texCoord = glm::vec2(1.f, 1.f);
+
+        Vertex v3;
+        v3.position = glm::vec2(px, py + size);
+        v3.texCoord = glm::vec2(0.f, 1.f);
 
         return { v0, v1, v2, v3 };
     }
@@ -61,8 +74,8 @@ namespace test
         m_VB  = std::make_unique<VertexBuffer>(sizeof(Vertex) * 1000);
 
         VertexBufferLayout layout;
-        layout.Push<float>(2); // vertex coord
-        layout.Push<float>(2); // tex coord
+        layout.Push<glm::vec2>(1); // vertex coord
+        layout.Push<glm::vec2>(1); // tex coord
         m_VAO->AddBuffer(*m_VB, layout);
 
         // pushdata
