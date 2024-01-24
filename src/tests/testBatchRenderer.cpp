@@ -7,6 +7,8 @@
 #include "testBatchRenderer.h"
 #include "batchRenderer.h"
 
+#include <iostream>
+
 namespace test
 {
     TestBatchRenderer::TestBatchRenderer()
@@ -37,16 +39,15 @@ namespace test
 
         BatchRenderer::BeginBatch();
 
-        BatchRenderer::MakeQuad(0.f, 0.f, 100.f, 100.f, glm::vec4(1.0,1.0,1.0,1.0));
-        // if (ImGui::Button("New Quad")) {
-        //     BatchRenderer::MakeQuad(m_NextQuadPX, m_NextQuadPY, 10.f, 10.f, glm::vec4(1.0,1.0,1.0,1.0));
-        //     if (m_NextQuadPX > m_QuadsPerRow * 10.f)
-        //     {
-        //         m_NextQuadPX = 0.f;
-        //         m_NextQuadPY += 10.f;
-        //     } else
-        //         m_NextQuadPX += 10.f;
-        // }
+        if (ImGui::Button("New Quad"))
+            m_NumOfQuads++;
+
+        for (int i = 0; i < m_NumOfQuads / m_QuadsPerRow; i++)
+            for (int j = 0; j <= m_QuadsPerRow; j++)
+                BatchRenderer::MakeQuad(j * 10.f, i * 10.f, 10.f, 10.f, glm::vec4(1.0,1.0,1.0,1.0));
+        for (int j = 0; j < m_NumOfQuads % m_QuadsPerRow; j++)
+            BatchRenderer::MakeQuad(j * 10.f, (m_NumOfQuads / m_QuadsPerRow) * 10.f, 10.f, 10.f, glm::vec4(1.0,1.0,1.0,1.0));
+
         BatchRenderer::EndBatch();
 
         glm::mat4 model = glm::translate(glm::mat4(1.0f), m_Translation);

@@ -94,9 +94,9 @@ void BatchRenderer::EndBatch()
 {
     // calculate size of quad buffer and send data
     GLsizeiptr size = (char*)s_Data.quadBufferNext - (char*)s_Data.quadBuffer;
-    std::cout << "size: " << size << std::endl;
+    // std::cout << "size: " << size << std::endl;
     // s_Data.vb.Bind();
-    std::cout << "layout m_Stride: " << s_Data.layout.GetStride() << std::endl;
+    // std::cout << "layout m_Stride: " << s_Data.layout.GetStride() << std::endl;
     GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, s_Data.vertexCount * sizeof(Vertex), s_Data.quadBuffer));
 }
 
@@ -106,15 +106,15 @@ void BatchRenderer::Flush()
     // s_Data.vao.Unbind();
     s_Data.vao.Bind();
     s_Data.ibo.Bind();
-    std::cout << "index count: " << s_Data.indexCount << std::endl;
-    std::cout << "buffer: " << std::endl;
+    // std::cout << "index count: " << s_Data.indexCount << std::endl;
+    // std::cout << "buffer: " << std::endl;
 
-    Vertex* temp = s_Data.quadBuffer;
-    for (int i = 0; i < 6; i++)
-    {
-        std::cout << glm::to_string(temp->position) << std::endl;
-        temp++;
-    }
+    // Vertex* temp = s_Data.quadBuffer;
+    // for (int i = 0; i < 6; i++)
+    // {
+    //     std::cout << glm::to_string(temp->position) << std::endl;
+    //     temp++;
+    // }
     GLCall(glDrawElements(GL_TRIANGLES, s_Data.indexCount, GL_UNSIGNED_INT, nullptr));
     // s_Data.vao.Unbind();
 
