@@ -43,5 +43,9 @@ public:
     static void Flush();
 
     /* make a quad, store the data into buffer */
-    static void MakeQuad(float px, float py, float dx, float dy, glm::vec4 color);
+    static void MakeQuad(glm::vec2 pos, glm::vec2 delta, uint32_t texID);
+    static void MakeQuad(glm::vec2 pos, glm::vec2 delta, glm::vec4 color);
+
+    /* load texture from path, return the tex slot */
+    static int LoadTexture(const std::string& path);
 };

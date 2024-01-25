@@ -11,12 +11,14 @@ private:
     int m_Width, m_Height, m_BPP; // bits per pixel
 
 public:
+    Texture(uint32_t color);
     Texture(const std::string& path);
     ~Texture();
 
     void Bind(uint32_t slot = 0) const;
     void Unbind() const;
 
+    inline uint32_t GetRendererID() const { return m_RendererID; }
     inline int GetWidth() const { return m_Width; }
     inline int GetHeight() const { return m_Height; }
 };

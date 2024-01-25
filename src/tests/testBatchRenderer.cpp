@@ -19,9 +19,20 @@ namespace test
         // enable alpha
         GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
         GLCall(glEnable(GL_BLEND));
+
         BatchRenderer::Init();
 
+        m_Textures.push_back(std::make_unique<Texture>("../res/textures/vsc-logo.png"));
+        m_Textures.push_back(std::make_unique<Texture>("../res/textures/google-logo.png"));
+
         m_Shader = std::make_unique<Shader>("../res/shaders/TestBatchRenderer.shader");
+        m_Shader->Bind();
+
+        int samplers[32];
+        for (int i = 0; i < 32; i++)
+            samplers[i] = i;
+        
+        m_Shader->SetUniform1iv("u_Textures", 32, samplers);
     }
 
     TestBatchRenderer::~TestBatchRenderer()
@@ -42,19 +53,32 @@ namespace test
         if (ImGui::Button("New Quad"))
             m_NumOfQuads++;
 
+        float size = 30.f;
         for (int i = 0; i < m_NumOfQuads / m_QuadsPerRow; i++)
             for (int j = 0; j <= m_QuadsPerRow; j++)
-                BatchRenderer::MakeQuad(j * 10.f, i * 10.f, 10.f, 10.f, glm::vec4(1.0,1.0,1.0,1.0));
+            {
+                int texSlot = (i + j) % 2;
+                BatchRenderer::MakeQuad(
+                     { j * size, i * size },
+                     { size, size },
+                      m_Textures[texSlot]->GetRendererID());
+            }
         for (int j = 0; j < m_NumOfQuads % m_QuadsPerRow; j++)
-            BatchRenderer::MakeQuad(j * 10.f, (m_NumOfQuads / m_QuadsPerRow) * 10.f, 10.f, 10.f, glm::vec4(1.0,1.0,1.0,1.0));
+        {
+            int texSlot = j % 2;
+            BatchRenderer::MakeQuad(
+                { j * size, (m_NumOfQuads / m_QuadsPerRow) * size },
+                { size, size },
+                m_Textures[texSlot]->GetRendererID());
+        }
 
-        BatchRenderer::EndBatch();
 
         glm::mat4 model = glm::translate(glm::mat4(1.0f), m_Translation);
         glm::mat4 mvp = m_Proj * m_View * model;
 
         // flush data and draw
         m_Shader->SetUniformMat4f("u_MVP", mvp);
+        BatchRenderer::EndBatch();
         BatchRenderer::Flush();
     }
     
@@ -64,12 +88,10 @@ namespace test
 
     void TestBatchRenderer::OnImGuiRender()
     {
-        ImGui::Begin("Controls");
         // change the position of quad by dynamically creating vertex array
         // ImGui::DragFloat2("Quad Position", m_QuadPosition, 5.f);
         // // change the position of quad by changing the model matrix
         ImGui::SliderFloat3("Translation", &m_Translation.x, 0.0f, 540.0f);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
     }
 }

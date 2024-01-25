@@ -15,12 +15,8 @@ namespace test
 {
     struct Vertex
     {
-        // float x, y;
-        // float texCoord_x, texCoord_y;
         glm::vec2 position;
         glm::vec2 texCoord;
-        // float texSlot;
-        // float r, g, b;
     };
 
     // lower left corner at (px, py), width = size
@@ -83,9 +79,6 @@ namespace test
         layout.Push<glm::vec2>(1); // tex coord
         m_VAO->AddBuffer(*m_VB, layout);
 
-        // // pushdata
-        // GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices));
-
         m_Textures[0]->Bind(0);
 
 
@@ -112,19 +105,6 @@ namespace test
         memcpy(vertices, q0.data(), q0.size() * sizeof(Vertex));
         memcpy(vertices + q0.size(), q1.data(), q1.size() * sizeof(Vertex));
 
-        // uint32_t indices[] = {
-        //     0, 1, 2, // first triangle
-        //     2, 3, 0,  // second one
-            
-        // };
-
-        // m_IBO = std::make_unique<IndexBuffer>(indices, 6);
-
-
-        // // make a dynamic vertex buffer by not passing the data
-        // m_VB  = std::make_unique<VertexBuffer>();
-        // m_VB->Init(sizeof(Vertex) * 1000);
-
         VertexBufferLayout layout;
         layout.Push<float>(2); // vertex coord
         layout.Push<float>(2); // tex coord
@@ -150,12 +130,6 @@ namespace test
         int py = 0;
         Renderer renderer;
         {
-            // // add quad via clicking
-            // if (ImGui::Button("Add Quad")) {
-
-            // }
-
-
             // draw the first square
             glm::mat4 model = glm::translate(glm::mat4(1.0f), m_Translation);
             glm::mat4 mvp = m_Proj * m_View * model;
@@ -170,12 +144,10 @@ namespace test
 
     void TestBatch::OnImGuiRender()
     {
-        ImGui::Begin("Controls");
         // change the position of quad by dynamically creating vertex array
         ImGui::DragFloat2("Quad Position", m_QuadPosition, 5.f);
         // change the position of quad by changing the model matrix
         ImGui::SliderFloat3("Translation", &m_Translation.x, 0.0f, 540.0f);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
     }
 }
